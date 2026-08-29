@@ -57,28 +57,16 @@ async function startBot() {
                 dataPath: "./.wwebjs_auth"
             }),
 
-            puppeteer: {
-                headless: true,
-
-                executablePath:
-                    process.env.PUPPETEER_EXECUTABLE_PATH ||
-                    "/usr/bin/chromium",
-
-                args: [
-                    "--no-sandbox",
-                    "--disable-setuid-sandbox",
-                    "--disable-dev-shm-usage",
-                    "--disable-gpu",
-                    "--disable-software-rasterizer",
-                    "--disable-extensions",
-                    "--no-first-run",
-                    "--no-default-browser-check",
-                    "--no-zygote",
-                    "--disable-background-timer-throttling",
-                    "--disable-backgrounding-occluded-windows",
-                    "--disable-renderer-backgrounding"
-                ]
-            },
+           puppeteer: {
+    headless: true,
+    executablePath: "/usr/bin/chromium",
+    args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu"
+    ]
+}
 
             restartOnAuthFail: true,
             takeoverOnConflict: true,
