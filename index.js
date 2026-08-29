@@ -14,15 +14,15 @@ let messageCount = 0;
 const startTime = Date.now();
 
 // ===============================
-// FORMAT HELPERS
+// TEXT HELPERS
 // ===============================
 
 const bold = (text) => `*${text}*`;
 const italic = (text) => `_${text}_`;
 const mono = (text) => `\`\`\`${text}\`\`\``;
 
-const line = () => `━━━━━━━━━━━━━━━`;
-const doubleLine = () => `════════════════════`;
+const line = () => "━━━━━━━━━━━━━━━";
+const doubleLine = () => "════════════════════";
 
 // ===============================
 // RUNTIME
@@ -39,15 +39,19 @@ function runtime() {
 }
 
 // ===============================
-// START WHATSAPP BOT
+// START BOT
 // ===============================
 
 async function startBot() {
     try {
         console.log("🚀 Starting MA BOT...");
+        console.log(
+            "🌐 Chromium:",
+            process.env.PUPPETEER_EXECUTABLE_PATH ||
+            "/usr/bin/chromium"
+        );
 
         client = new Client({
-
             authStrategy: new LocalAuth({
                 clientId: "ma-bot",
                 dataPath: "./.wwebjs_auth"
@@ -55,6 +59,10 @@ async function startBot() {
 
             puppeteer: {
                 headless: true,
+
+                executablePath:
+                    process.env.PUPPETEER_EXECUTABLE_PATH ||
+                    "/usr/bin/chromium",
 
                 args: [
                     "--no-sandbox",
@@ -99,9 +107,9 @@ async function startBot() {
         // AUTH FAILURE
         // ===============================
 
-        client.on("auth_failure", (msg) => {
+        client.on("auth_failure", (message) => {
             status = "auth_failure";
-            console.error("❌ Authentication failure:", msg);
+            console.error("❌ Authentication failure:", message);
         });
 
         // ===============================
@@ -127,9 +135,7 @@ async function startBot() {
         // ===============================
 
         client.on("message", async (message) => {
-
             try {
-
                 const rawText = message.body || "";
                 const text = rawText.trim().toLowerCase();
 
@@ -140,12 +146,10 @@ async function startBot() {
                 // ===============================
 
                 if (text === ".test") {
-
                     await message.reply(
                         `${bold("✅ Bot working!")}\n` +
                         `⏱️ ${runtime()}`
                     );
-
                     return;
                 }
 
@@ -154,16 +158,13 @@ async function startBot() {
                 // ===============================
 
                 if (text === ".menu" || text === ".help") {
-
                     await message.reply(
-
                         `${doubleLine()}\n` +
                         `${bold("🤖 MA BOT MENU")}\n` +
                         `${doubleLine()}\n\n` +
 
                         `${bold("📌 GENERAL")}\n` +
                         `${line()}\n` +
-
                         `${mono(".ping")} - Check bot\n` +
                         `${mono(".alive")} - Bot status\n` +
                         `${mono(".info")} - Bot info\n` +
@@ -171,7 +172,6 @@ async function startBot() {
 
                         `${bold("👥 GROUP")}\n` +
                         `${line()}\n` +
-
                         `${mono(".groupinfo")} - Group details\n` +
                         `${mono(".admins")} - List admins\n` +
                         `${mono(".tagall")} - Tag everyone\n` +
@@ -182,7 +182,6 @@ async function startBot() {
 
                         `${bold("🛠️ TOOLS")}\n` +
                         `${line()}\n` +
-
                         `${mono(".sticker")} - Make sticker\n` +
                         `${mono(".calc")} - Calculator\n` +
                         `${mono(".coinflip")} - Flip coin\n` +
@@ -203,11 +202,9 @@ async function startBot() {
                 // ===============================
 
                 if (text === ".ping") {
-
                     await message.reply(
                         `${bold("🏓 Pong!")}`
                     );
-
                     return;
                 }
 
@@ -216,12 +213,10 @@ async function startBot() {
                 // ===============================
 
                 if (text === ".alive") {
-
                     await message.reply(
                         `${bold("✅ Bot Alive")}\n` +
                         `⏱️ ${runtime()}`
                     );
-
                     return;
                 }
 
@@ -230,11 +225,9 @@ async function startBot() {
                 // ===============================
 
                 if (text === ".info") {
-
                     const info = client?.info;
 
                     await message.reply(
-
                         `${bold("📱 Bot Info")}\n` +
                         `👤 ${info?.pushname || "MA BOT"}`
                     );
@@ -247,9 +240,7 @@ async function startBot() {
                 // ===============================
 
                 if (text === ".owner") {
-
                     await message.reply(
-
                         `${bold("👑 Owner")}\n` +
                         `Muhammad Ayan\n` +
                         `${italic("MA Developers")}`
@@ -263,20 +254,16 @@ async function startBot() {
                 // ===============================
 
                 if (text === ".groupinfo") {
-
                     if (!message.from.endsWith("@g.us")) {
-
                         await message.reply(
                             bold("❌ Group only!")
                         );
-
                         return;
                     }
 
                     const chat = await message.getChat();
 
                     await message.reply(
-
                         `${bold("👥 Group")}\n` +
                         `${chat.name}`
                     );
@@ -289,7 +276,6 @@ async function startBot() {
                 // ===============================
 
                 if (text === ".tagall") {
-
                     if (!message.from.endsWith("@g.us")) {
                         return;
                     }
@@ -297,23 +283,21 @@ async function startBot() {
                     const chat = await message.getChat();
                     const mentions = chat.participants;
 
-                    let out = `${bold("📢 Attention")}\n\n`;
+                    let output =
+                        `${bold("📢 Attention")}\n\n`;
 
-                    mentions.forEach((p) => {
-
-                        out += `@${p.id.user} `;
-
+                    mentions.forEach((participant) => {
+                        output +=
+                            `@${participant.id.user} `;
                     });
 
                     await message.reply(
-
-                        out,
-
+                        output,
                         undefined,
-
                         {
                             mentions: mentions.map(
-                                (p) => p.id._serialized
+                                (participant) =>
+                                    participant.id._serialized
                             )
                         }
                     );
@@ -326,15 +310,12 @@ async function startBot() {
                 // ===============================
 
                 if (text === ".sticker") {
-
                     if (!message.hasMedia) {
-
                         await message.reply(
                             bold(
                                 "❌ Send/reply to an image or video."
                             )
                         );
-
                         return;
                     }
 
@@ -342,26 +323,21 @@ async function startBot() {
                         await message.downloadMedia();
 
                     if (!media) {
-
                         await message.reply(
                             bold(
                                 "❌ Media download failed."
                             )
                         );
-
                         return;
                     }
 
                     await client.sendMessage(
-
                         message.from,
-
                         new MessageMedia(
                             media.mimetype,
                             media.data,
                             "MA-BOT"
                         ),
-
                         {
                             sendMediaAsSticker: true
                         }
@@ -375,42 +351,29 @@ async function startBot() {
                 // ===============================
 
                 if (text.startsWith(".calc")) {
-
                     const expression =
-                        rawText
-                            .substring(5)
-                            .trim();
+                        rawText.substring(5).trim();
 
                     if (!expression) {
-
                         await message.reply(
                             bold(
                                 "❌ Example: .calc 10+20"
                             )
                         );
-
                         return;
                     }
 
                     try {
-
-                        const result =
-                            Function(
-                                `"use strict"; return (${expression})`
-                            )();
+                        const result = Function(
+                            `"use strict"; return (${expression})`
+                        )();
 
                         await message.reply(
-
-                            `${bold("🧮 Result")}\n` +
-                            `${result}`
+                            `${bold("🧮 Result")}\n${result}`
                         );
-
                     } catch {
-
                         await message.reply(
-                            bold(
-                                "❌ Invalid calculation."
-                            )
+                            bold("❌ Invalid calculation.")
                         );
                     }
 
@@ -422,7 +385,6 @@ async function startBot() {
                 // ===============================
 
                 if (text === ".coinflip") {
-
                     const result =
                         Math.random() < 0.5
                             ? "Heads"
@@ -440,7 +402,6 @@ async function startBot() {
                 // ===============================
 
                 if (text === ".dice") {
-
                     const result =
                         Math.floor(
                             Math.random() * 6
@@ -458,13 +419,9 @@ async function startBot() {
                 // ===============================
 
                 if (text === ".joke") {
-
                     const jokes = [
-
                         "Why did the developer go broke? Cache problems!",
-
                         "Programmer's favorite place: Foo Bar"
-
                     ];
 
                     const joke =
@@ -476,36 +433,33 @@ async function startBot() {
                         ];
 
                     await message.reply(
-
-                        `${bold("😄")} ` +
-                        `${italic(joke)}`
+                        `${bold("😄")} ${italic(joke)}`
                     );
 
                     return;
                 }
 
             } catch (error) {
-
                 console.error(
                     "[MESSAGE ERROR]",
                     error
                 );
             }
-
         });
 
         // ===============================
         // INITIALIZE
         // ===============================
 
+        console.log("⏳ Initializing WhatsApp...");
+
         await client.initialize();
 
     } catch (error) {
-
         status = "error";
 
         console.error(
-            "[BOT START ERROR]",
+            "[START ERROR]",
             error
         );
     }
@@ -516,89 +470,61 @@ async function startBot() {
 // ===============================
 
 app.get("/", (req, res) => {
-
     res.json({
-
         name: "MA BOT",
-
         status: status,
-
         uptime: runtime(),
-
         messages: messageCount
-
     });
-
 });
 
 // ===============================
-// STATUS API
+// STATUS
 // ===============================
 
 app.get("/api/status", (req, res) => {
-
     res.json({
-
         success: true,
-
         status: status,
-
         uptime: runtime(),
-
         messages: messageCount
-
     });
-
 });
 
 // ===============================
-// PAIRING CODE API
+// PAIRING CODE
 // ===============================
 
 app.post("/api/pair", async (req, res) => {
-
     try {
-
         if (!client) {
-
             return res.status(503).json({
-
                 success: false,
-
                 message:
                     "WhatsApp client is not initialized yet."
-
             });
-
         }
 
         const phone = req.body.phone;
 
         if (!phone) {
-
             return res.status(400).json({
-
                 success: false,
-
                 message: "Phone required"
-
             });
-
         }
 
         let number =
             String(phone).replace(/\D/g, "");
 
         if (number.startsWith("0")) {
-
             number =
                 "92" +
                 number.substring(1);
-
         }
 
         console.log(
-            "📲 Requesting pairing code for:",
+            "📲 Requesting pairing code:",
             number
         );
 
@@ -609,52 +535,40 @@ app.post("/api/pair", async (req, res) => {
             );
 
         return res.json({
-
             success: true,
-
             phone: number,
-
             pairingCode: code
-
         });
 
     } catch (error) {
-
         console.error(
             "[PAIR ERROR]",
             error
         );
 
         return res.status(500).json({
-
             success: false,
-
             message: error.message
-
         });
-
     }
-
 });
 
 // ===============================
-// START SERVER
+// SERVER
 // ===============================
 
 app.listen(
     PORT,
     "0.0.0.0",
     () => {
-
         console.log(
-            `✅ MA BOT server running on port ${PORT}`
+            `✅ Bot running on port ${PORT}`
         );
-
     }
 );
 
 // ===============================
-// START BOT
+// START
 // ===============================
 
 startBot();
