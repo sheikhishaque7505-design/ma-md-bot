@@ -1,4 +1,4 @@
-```dockerfile
+
 FROM node:20-bookworm
 
 RUN apt-get update && apt-get install -y \
@@ -28,12 +28,12 @@ WORKDIR /app
 
 COPY package*.json ./
 
+ENV PUPPETEER_SKIP_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+
 RUN npm install
 
 COPY . .
-
-ENV PUPPETEER_SKIP_DOWNLOAD=true
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 EXPOSE 3000
 
